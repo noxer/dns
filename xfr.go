@@ -80,8 +80,10 @@ func (t *Transfer) In(q *Msg, a string) (env chan *Envelope, err error) {
 
 func (t *Transfer) inAxfr(q *Msg, c chan *Envelope) {
 	first := true
-	defer t.Close()
-	defer close(c)
+	defer func() {
+		t.Close()
+		close(c)
+	}()
 	timeout := dnsTimeout
 	if t.ReadTimeout != 0 {
 		timeout = t.ReadTimeout
